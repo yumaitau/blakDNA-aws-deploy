@@ -10,6 +10,6 @@ The application and authoritative PostgreSQL state belong in the buyer's approve
 
 Current information and evaluation enquiries: https://www.yumait.com.au/contact
 
-The public marketing repository is [yumaitau/blakDNA-landing](https://github.com/yumaitau/blakDNA-landing). Production site and release links will be added only after verification.
+Learn the product model at [blakdna-landing.pages.dev](https://blakdna-landing.pages.dev). The public marketing repository is [yumaitau/blakDNA-landing](https://github.com/yumaitau/blakDNA-landing). The website is live; this deployment package remains preparation-only until its release and AWS verification gates pass.
 
 Never paste secrets or customer evidence into public issues. Contact support@yumait.com.au for private security reporting.
