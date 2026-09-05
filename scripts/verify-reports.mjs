@@ -7,6 +7,10 @@ for (const name of ["checkov", "trivy-source", "trivy-terraform", "trivy-cloudfo
   const report = JSON.parse(readFileSync(`reports/sarif/${name}.sarif`, "utf8"));
   assert.equal(report.version, "2.1.0", `${name}: invalid SARIF version`);
   assert.ok(report.runs?.length > 0, `${name}: missing scanner run`);
+  report.runs.forEach((scannerRun, index) => {
+    scannerRun.automationDetails = { ...scannerRun.automationDetails, id: `${name}-${index}/` };
+  });
+  writeFileSync(`reports/sarif/${name}.sarif`, JSON.stringify(report));
 }
 const sbom = JSON.parse(readFileSync("reports/source-sbom.cdx.json", "utf8"));
 assert.equal(sbom.bomFormat, "CycloneDX");
