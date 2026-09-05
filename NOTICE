@@ -1,0 +1,7 @@
+This repository contains public buyer-deployment material for blakDNA.
+It does not grant a license to the private blakDNA application, its images,
+third-party software, trademarks or AWS Marketplace subscriptions.
+
+AWS services, Terraform, Helm and validation tools retain their own applicable
+terms and licenses. Use of public deployment templates does not imply AWS
+certification, a supported release or completed production verification.

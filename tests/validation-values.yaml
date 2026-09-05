@@ -1,0 +1,6 @@
+image:
+  repository: 111111111111.dkr.ecr.us-east-1.amazonaws.com/validation-only
+  digest: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+publicOrigin: https://blakdna.buyer.example
+serviceAccount:
+  name: validation-only-existing-irsa

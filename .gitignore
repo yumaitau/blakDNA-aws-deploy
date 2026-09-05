@@ -10,3 +10,7 @@
 *.pem
 *.key
 crash.log
+buyer-validation.log
+reports/
+._*
+.DS_Store

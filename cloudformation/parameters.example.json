@@ -1,0 +1,54 @@
+[
+  {
+    "ParameterKey": "SmtpRelayCidr",
+    "ParameterValue": "203.0.113.10/32"
+  },
+  {
+    "ParameterKey": "ContainerImage",
+    "ParameterValue": ""
+  },
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-0123456789abcdef0"
+  },
+  {
+    "ParameterKey": "VpcCidr",
+    "ParameterValue": "10.42.0.0/16"
+  },
+  {
+    "ParameterKey": "PublicSubnetIds",
+    "ParameterValue": "subnet-public-a,subnet-public-b"
+  },
+  {
+    "ParameterKey": "ApplicationSubnetIds",
+    "ParameterValue": "subnet-app-a,subnet-app-b"
+  },
+  {
+    "ParameterKey": "DataSubnetIds",
+    "ParameterValue": "subnet-data-a,subnet-data-b"
+  },
+  {
+    "ParameterKey": "CertificateArn",
+    "ParameterValue": "arn:aws:acm:ap-southeast-2:123456789012:certificate/00000000-0000-4000-8000-000000000000"
+  },
+  {
+    "ParameterKey": "ApplicationHostname",
+    "ParameterValue": "blakdna.example.com"
+  },
+  {
+    "ParameterKey": "Route53ZoneId",
+    "ParameterValue": "Z0000000000000000000"
+  },
+  {
+    "ParameterKey": "HermesBaseUrl",
+    "ParameterValue": "https://hermes.buyer.example"
+  },
+  {
+    "ParameterKey": "AllowedIngressCidr",
+    "ParameterValue": "203.0.113.10/32"
+  },
+  {
+    "ParameterKey": "RuntimeSecretArn",
+    "ParameterValue": "arn:aws:secretsmanager:ap-southeast-2:123456789012:secret:replace-runtime-secret"
+  }
+]

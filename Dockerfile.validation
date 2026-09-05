@@ -1,0 +1,11 @@
+FROM node:24-bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git unzip python3 python3-venv shellcheck && rm -rf /var/lib/apt/lists/*
+COPY scripts/install-validation-tools.sh /tmp/install-validation-tools.sh
+RUN sh /tmp/install-validation-tools.sh && rm /tmp/install-validation-tools.sh
+RUN python3 -m venv /opt/validation && /opt/validation/bin/pip install --no-cache-dir checkov==3.3.16 cfn-lint==1.56.0
+ENV PATH="/opt/validation/bin:$PATH"
+WORKDIR /validation
+COPY . .
+RUN chown -R node:node /validation
+USER node
+CMD ["sh", "scripts/validate.sh"]

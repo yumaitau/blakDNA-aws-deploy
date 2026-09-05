@@ -1,0 +1,13 @@
+language: en-AU
+reviews:
+  profile: assertive
+  high_level_summary: true
+  poem: false
+  path_filters:
+    - "terraform/**"
+    - "cloudformation/**"
+    - "charts/**"
+    - "scripts/**"
+    - "tests/**"
+    - ".github/**"
+    - "*.md"

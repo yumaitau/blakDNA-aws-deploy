@@ -1,0 +1,8 @@
+framework:
+  - terraform
+  - cloudformation
+download-external-modules: false
+soft-fail: false
+skip-path:
+  - terraform/.terraform
+  - charts

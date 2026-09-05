@@ -1,0 +1,11 @@
+.git
+**/.terraform
+**/*.tfstate*
+**/*.tfplan
+**/*.tfvars
+**/.env*
+**/*.pem
+**/*.key
+reports
+**/._*
+**/.DS_Store
