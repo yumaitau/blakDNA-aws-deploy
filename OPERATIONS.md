@@ -17,7 +17,11 @@ Before deployment, create a buyer-owned Secrets Manager JSON secret containing:
 Generate values privately with a password manager or approved secret tooling.
 Do not put secret values in Terraform variables, shell arguments, tickets or
 source control. Templates inject JSON keys directly into web, worker and
-preflight tasks. RDS supplies its separately managed database password.
+preflight tasks. On ECS, RDS supplies its separately managed database password.
+On EKS, the buyer's secret controller must also populate `DATABASE_PASSWORD`
+(or the configured `runtimeSecret.databasePasswordKey`) in that same Kubernetes
+Secret from the external database credential. The chart does not copy the RDS
+password or create the Secret. Verify all eight keys before installation.
 If the runtime secret uses a customer KMS key, grant decrypt only on that key.
 
 SMTP uses implicit TLS on port 465. Set Terraform `smtp_relay_cidrs` or CloudFormation

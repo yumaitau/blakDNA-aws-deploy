@@ -59,4 +59,12 @@ for service stability. Verify real HTTPS health, owner bootstrap, scoped
 observation ingestion and readback after task restart before declaring success.
 
 See [Upgrade](../UPGRADE.md) and [Teardown](../TEARDOWN.md). RDS snapshot retention
-does not protect against deletion of its KMS key; preserve independent backups.
+and the data KMS key are retained on deletion/replacement, as is the ALB log
+bucket. Retire them separately only after reviewing every dependent backup.
+
+`ServicesEnabled` is a buyer-administered operational gate, not an IAM boundary.
+CloudFormation cannot prevent an account administrator from editing this template
+or updating the parameter directly. Such bypasses are unsupported. Constrain
+stack updates to the buyer's reviewed deployment role/process. The supported
+image entrypoint still enforces licensing and runs migrations before every
+command; this template does not override it or expose migration-skip settings.

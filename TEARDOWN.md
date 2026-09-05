@@ -50,8 +50,11 @@ retention policy. Empty state alone does not prove a clean account.
 Protect a separately encrypted, tested backup before disabling database and ALB
 deletion protection. Inspect a change set for the exact stack, then delete that
 stack only. RDS has snapshot retention; account for encryption-key retention.
-Verify stack deletion and each owned resource independently. Resolve retained
-log buckets explicitly; do not empty unrelated buckets.
+The data KMS key and ALB log bucket have Retain policies on deletion and
+replacement. Verify stack deletion and each removed resource independently,
+and record the retained key, snapshots and bucket as a separate inventory.
+Retire a key only after every encrypted backup is no longer needed. Resolve
+retained log objects and versions explicitly; do not empty unrelated buckets.
 
 ## Helm
 

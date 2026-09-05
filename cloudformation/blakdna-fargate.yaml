@@ -50,6 +50,8 @@ Conditions:
 Resources:
   DataKey:
     Type: AWS::KMS::Key
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       Description: blakDNA buyer data, secrets, logs, and alarms
       EnableKeyRotation: true
@@ -237,7 +239,8 @@ Resources:
         skip:
           - id: CKV_AWS_18
             comment: Terminal access-log destination; independent audit logging requires a buyer-approved integration.
-    DeletionPolicy: Delete
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketEncryption:
         ServerSideEncryptionConfiguration: [{ ServerSideEncryptionByDefault: { SSEAlgorithm: AES256 } }]
@@ -312,6 +315,10 @@ Resources:
     Properties:
       Name: blakdna-buyer
       Scope: REGIONAL
+      DataProtectionConfig:
+        DataProtections:
+          - Action: SUBSTITUTION
+            Field: { FieldType: SINGLE_HEADER, FieldKeys: [authorization, cookie] }
       DefaultAction: { Allow: {} }
       Rules:
         - Name: AWSManagedRulesCommonRuleSet
@@ -319,14 +326,14 @@ Resources:
           OverrideAction: { None: {} }
           Statement:
             ManagedRuleGroupStatement: { Name: AWSManagedRulesCommonRuleSet, VendorName: AWS }
-          VisibilityConfig: { CloudWatchMetricsEnabled: true, MetricName: blakdna-buyer-common, SampledRequestsEnabled: true }
+          VisibilityConfig: { CloudWatchMetricsEnabled: true, MetricName: blakdna-buyer-common, SampledRequestsEnabled: false }
         - Name: AWSManagedRulesKnownBadInputsRuleSet
           Priority: 20
           OverrideAction: { None: {} }
           Statement:
             ManagedRuleGroupStatement: { Name: AWSManagedRulesKnownBadInputsRuleSet, VendorName: AWS }
-          VisibilityConfig: { CloudWatchMetricsEnabled: true, MetricName: blakdna-buyer-known-bad-inputs, SampledRequestsEnabled: true }
-      VisibilityConfig: { CloudWatchMetricsEnabled: true, MetricName: blakdna-buyer, SampledRequestsEnabled: true }
+          VisibilityConfig: { CloudWatchMetricsEnabled: true, MetricName: blakdna-buyer-known-bad-inputs, SampledRequestsEnabled: false }
+      VisibilityConfig: { CloudWatchMetricsEnabled: true, MetricName: blakdna-buyer, SampledRequestsEnabled: false }
   WebAclAssociation:
     Type: AWS::WAFv2::WebACLAssociation
     Properties: { ResourceArn: !Ref LoadBalancer, WebACLArn: !GetAtt WebAcl.Arn }
@@ -338,7 +345,7 @@ Resources:
     Properties:
       LogDestinationConfigs: [!GetAtt WafLogGroup.Arn]
       ResourceArn: !GetAtt WebAcl.Arn
-      RedactedFields: [{ SingleHeader: { Name: authorization } }]
+      RedactedFields: [{ SingleHeader: { Name: authorization } }, { SingleHeader: { Name: cookie } }]
 
   WebTaskDefinition:
     Type: AWS::ECS::TaskDefinition

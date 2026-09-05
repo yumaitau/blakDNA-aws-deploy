@@ -90,3 +90,9 @@ run "reject_world_open_smtp" {
   variables { smtp_relay_cidrs = ["0.0.0.0/0"] }
   expect_failures = [var.smtp_relay_cidrs]
 }
+
+run "reject_cross_region_certificate" {
+  command = plan
+  variables { certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/00000000-0000-4000-8000-000000000000" }
+  expect_failures = [var.certificate_arn]
+}

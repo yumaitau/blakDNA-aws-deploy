@@ -3,4 +3,4 @@ kind: PodDisruptionBudget
 metadata: { name: {{ include "blakdna.fullname" . }}-web }
 spec:
   maxUnavailable: 1
-  selector: { matchLabels: { app.kubernetes.io/name: {{ include "blakdna.name" . }}, app.kubernetes.io/component: web } }
+  selector: { matchLabels: { app.kubernetes.io/name: {{ include "blakdna.name" . }}, app.kubernetes.io/instance: {{ .Release.Name | quote }}, app.kubernetes.io/component: web } }
