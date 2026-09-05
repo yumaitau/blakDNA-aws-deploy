@@ -1,0 +1,29 @@
+image:
+  repository: ""
+  digest: ""
+  pullPolicy: IfNotPresent
+serviceAccount:
+  name: ""
+service: { port: 80 }
+web:
+  replicas: 1
+  resources:
+    requests: { cpu: 500m, memory: 1Gi }
+    limits: { cpu: "1", memory: 2Gi }
+worker:
+  replicas: 1
+  resources:
+    requests: { cpu: 250m, memory: 512Mi }
+    limits: { cpu: 500m, memory: 1Gi }
+database: { host: postgres.buyer.example, port: "5432", name: blakdna, user: blakdnaadmin, sslmode: require }
+publicOrigin: ""
+hermes: { baseUrl: https://hermes.buyer.example }
+runtimeSecret:
+  name: blakdna-runtime
+  databasePasswordKey: DATABASE_PASSWORD
+ingress:
+  enabled: false
+  className: alb
+  host: blakdna.buyer.example
+  tlsSecretName: blakdna-tls
+  annotations: {}

@@ -1,0 +1,18 @@
+expected_account_id = "123456789012"
+smtp_relay_cidrs = ["203.0.113.10/32"]
+container_image = ""
+certificate_arn         = "arn:aws:acm:ap-southeast-2:123456789012:certificate/00000000-0000-4000-8000-000000000000"
+application_hostname    = "blakdna.example.com"
+route53_zone_id         = "Z0000000000000000000"
+hermes_base_url         = "https://hermes.buyer.example"
+runtime_secret_arn = "arn:aws:secretsmanager:ap-southeast-2:123456789012:secret:replace-runtime-secret"
+allowed_ingress_cidrs   = ["203.0.113.10/32"]
+
+single_nat_gateway                = false
+database_multi_az                 = true
+database_deletion_protection      = true
+load_balancer_deletion_protection = true
+skip_final_database_snapshot      = false
+force_destroy_log_bucket          = false
+database_backup_retention_days    = 14
+alarm_notification_email          = "security@example.com"

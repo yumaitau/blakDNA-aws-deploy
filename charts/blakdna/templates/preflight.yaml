@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "blakdna.fullname" . }}-preflight
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: {{ include "blakdna.name" . }}, app.kubernetes.io/component: preflight }
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ required "A buyer-provisioned IRSA serviceAccount.name is required" .Values.serviceAccount.name }}
+      securityContext: { runAsNonRoot: true, runAsUser: 1001, runAsGroup: 1001, fsGroup: 1001, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: preflight
+          image: {{ include "blakdna.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: [node, "-e", {{ .Files.Get "files/preflight.cjs" | quote }}]
+          env:
+            {{- include "blakdna.environment" . | nindent 12 }}
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, runAsNonRoot: true, capabilities: { drop: [ALL] } }
+          resources:
+            {{- toYaml .Values.web.resources | nindent 12 }}
+          volumeMounts: [{ name: tmp, mountPath: /tmp }]
+      volumes: [{ name: tmp, emptyDir: { sizeLimit: 64Mi } }]
