@@ -3,5 +3,5 @@ kind: Service
 metadata: { name: {{ include "blakdna.fullname" . }} }
 spec:
   type: ClusterIP
-  selector: { app.kubernetes.io/name: {{ include "blakdna.name" . }}, app.kubernetes.io/component: web }
+  selector: { app.kubernetes.io/name: {{ include "blakdna.name" . }}, app.kubernetes.io/instance: {{ .Release.Name | quote }}, app.kubernetes.io/component: web }
   ports: [{ name: http, port: {{ .Values.service.port }}, targetPort: http, protocol: TCP }]

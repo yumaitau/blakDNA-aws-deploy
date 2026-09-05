@@ -70,6 +70,12 @@ Recorded state lineage cannot be replaced or silently lost. Once service
 enablement begins, initial deployment cannot be rerun; follow the upgrade
 runbook or inspect the partial apply. Never copy unrelated Terraform state.
 
+An interrupted preflight resumes the recorded task instead of launching another.
+If the RunTask response was lost, the saved token and exact request are retried
+only within 30 minutes. Outside that window, or after a recorded task failure,
+inspect ECS and obtain a reviewed recovery plan. Never erase the task record to
+force another migration. Run only one lifecycle command per workspace at a time.
+
 ## Network and durability
 
 Restrict `allowed_ingress_cidrs`. World-open ingress fails unless the buyer

@@ -86,7 +86,11 @@
       "required": [
         "name",
         "databasePasswordKey"
-      ]
+      ],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "databasePasswordKey": { "type": "string", "minLength": 1 }
+      }
     },
     "publicOrigin": {
       "type": "string",

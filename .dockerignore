@@ -3,6 +3,7 @@
 **/*.tfstate*
 **/*.tfplan
 **/*.tfvars
+**/*.tfvars.json
 **/.env*
 **/*.pem
 **/*.key

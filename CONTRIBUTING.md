@@ -20,6 +20,12 @@ Use a native architecture. Preserve failures; do not mask scanner exit codes.
 Format Terraform before proposing changes. Full-history Gitleaks runs separately
 in trusted CI because the image deliberately excludes .git.
 
+Validation-tool archives must match the committed SHA-256 inventory in
+`scripts/validation-tool-checksums.txt`; HTTPS is required for every redirect.
+Update versions and independently reviewed publisher checksums together. A fresh
+downloaded checksum file is not the runtime trust root. Test both native supported
+architectures when changing tools.
+
 External contributions require maintainer source review before a trusted branch
 can run on organisation self-hosted runners. Do not use pull_request_target to
 execute contributor code with privileged access.

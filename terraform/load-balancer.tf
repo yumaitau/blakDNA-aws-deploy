@@ -43,6 +43,9 @@ resource "aws_wafv2_web_acl_logging_configuration" "this" {
   redacted_fields {
     single_header { name = "authorization" }
   }
+  redacted_fields {
+    single_header { name = "cookie" }
+  }
 }
 
 resource "aws_s3_bucket_versioning" "alb_logs" {
@@ -182,7 +185,7 @@ resource "aws_wafv2_web_acl" "this" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${local.name}-common"
-      sampled_requests_enabled   = true
+      sampled_requests_enabled   = false
     }
   }
 
@@ -201,14 +204,14 @@ resource "aws_wafv2_web_acl" "this" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${local.name}-known-bad-inputs"
-      sampled_requests_enabled   = true
+      sampled_requests_enabled   = false
     }
   }
 
   visibility_config {
     cloudwatch_metrics_enabled = true
     metric_name                = local.name
-    sampled_requests_enabled   = true
+    sampled_requests_enabled   = false
   }
 }
 

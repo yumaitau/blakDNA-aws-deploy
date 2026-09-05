@@ -55,8 +55,8 @@ variable "certificate_arn" {
   type        = string
   description = "ACM certificate ARN in aws_region."
   validation {
-    condition     = can(regex("^arn:[^:]+:acm:[^:]+:[0-9]{12}:certificate/.+$", var.certificate_arn))
-    error_message = "certificate_arn must be an ACM certificate ARN."
+    condition     = can(regex("^arn:[^:]+:acm:[^:]+:[0-9]{12}:certificate/.+$", var.certificate_arn)) && try(split(":", var.certificate_arn)[3] == var.aws_region, false)
+    error_message = "certificate_arn must be an ACM certificate ARN in aws_region."
   }
 }
 

@@ -124,16 +124,35 @@ export async function deploy(environment = process.env, execute = run) {
   const deployment = loadDeployment(environment, execute);
   const { directory, manifest } = deployment;
   if (!["PREPARED", "PLANNING", "INFRASTRUCTURE_CREATED_SERVICES_DISABLED", "PREFLIGHT_STARTED", "PREFLIGHT_PASSED"].includes(manifest.phase)) throw new Error("Initial deployment cannot restart an enabled or retiring stack; use the upgrade runbook");
-  save(directory, manifest, "PLANNING");
-  terraform(deployment, ["init", "-input=false", "-backend=false"]);
-  applyPlan(deployment, "bootstrap", ["-var=services_enabled=false"]);
+  const resumingPreflight = ["PREFLIGHT_STARTED", "PREFLIGHT_PASSED"].includes(manifest.phase);
+  if (!resumingPreflight) {
+    save(directory, manifest, "PLANNING");
+    terraform(deployment, ["init", "-input=false", "-backend=false"]);
+    applyPlan(deployment, "bootstrap", ["-var=services_enabled=false"]);
+  }
   const resources = outputs(deployment);
-  manifest.resources = resources;
-  save(directory, manifest, "INFRASTRUCTURE_CREATED_SERVICES_DISABLED");
-  const started = aws(deployment, ["ecs", "run-task", "--cluster", resources.ecs_cluster_name, "--task-definition", resources.preflight_task_definition, "--launch-type", "FARGATE", "--client-token", randomBytes(16).toString("hex"), "--network-configuration", JSON.stringify({ awsvpcConfiguration: { subnets: resources.application_subnet_ids, securityGroups: [resources.task_security_group_id], assignPublicIp: "DISABLED" } })]);
-  if (started.failures?.length || started.tasks?.length !== 1) throw new Error("Preflight task could not start; services remain disabled");
-  manifest.preflightTaskArn = started.tasks[0].taskArn;
-  save(directory, manifest, "PREFLIGHT_STARTED");
+  if (!resumingPreflight) {
+    manifest.resources = resources;
+    save(directory, manifest, "INFRASTRUCTURE_CREATED_SERVICES_DISABLED");
+    manifest.preflightRequest = {
+      cluster: resources.ecs_cluster_name,
+      taskDefinition: resources.preflight_task_definition,
+      launchType: "FARGATE",
+      clientToken: randomBytes(16).toString("hex"),
+      networkConfiguration: { awsvpcConfiguration: { subnets: resources.application_subnet_ids, securityGroups: [resources.task_security_group_id], assignPublicIp: "DISABLED" } },
+    };
+    manifest.preflightRequestedAt = new Date().toISOString();
+    save(directory, manifest, "PREFLIGHT_STARTED");
+  }
+  if (!manifest.preflightRequest || manifest.preflightRequest.taskDefinition !== resources.preflight_task_definition || manifest.preflightRequest.cluster !== resources.ecs_cluster_name) throw new Error("Preflight request provenance is missing or changed; inspect the recorded task manually");
+  if (!manifest.preflightTaskArn) {
+    const requestAge = Date.now() - Date.parse(manifest.preflightRequestedAt);
+    if (!Number.isFinite(requestAge) || requestAge < 0 || requestAge > 30 * 60 * 1000) throw new Error("Preflight request is outside the safe retry window; inspect ECS before continuing");
+    const started = aws(deployment, ["ecs", "run-task", "--cli-input-json", JSON.stringify(manifest.preflightRequest)]);
+    if (started.failures?.length || started.tasks?.length !== 1 || !started.tasks[0].taskArn) throw new Error("Preflight task could not start; services remain disabled");
+    manifest.preflightTaskArn = started.tasks[0].taskArn;
+    save(directory, manifest, "PREFLIGHT_STARTED");
+  }
   deployment.execute("aws", ["ecs", "wait", "tasks-stopped", "--cluster", resources.ecs_cluster_name, "--tasks", manifest.preflightTaskArn, "--region", manifest.region], directory);
   const stopped = aws(deployment, ["ecs", "describe-tasks", "--cluster", resources.ecs_cluster_name, "--tasks", manifest.preflightTaskArn]);
   if (stopped.failures?.length || stopped.tasks?.length !== 1 || stopped.tasks[0].containers?.length !== 1 || stopped.tasks[0].containers[0].exitCode !== 0) {
