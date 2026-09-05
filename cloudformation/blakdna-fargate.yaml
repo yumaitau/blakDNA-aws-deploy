@@ -315,6 +315,10 @@ Resources:
     Properties:
       Name: blakdna-buyer
       Scope: REGIONAL
+      DataProtectionConfig:
+        DataProtections:
+          - Action: SUBSTITUTION
+            Field: { FieldType: SINGLE_HEADER, FieldKeys: [authorization, cookie] }
       DefaultAction: { Allow: {} }
       Rules:
         - Name: AWSManagedRulesCommonRuleSet

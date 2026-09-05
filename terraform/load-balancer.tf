@@ -166,6 +166,16 @@ resource "aws_wafv2_web_acl" "this" {
   name  = local.name
   scope = "REGIONAL"
 
+  data_protection_config {
+    data_protection {
+      action = "SUBSTITUTION"
+      field {
+        field_type = "SINGLE_HEADER"
+        field_keys = ["authorization", "cookie"]
+      }
+    }
+  }
+
   default_action {
     allow {}
   }

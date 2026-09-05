@@ -7,11 +7,13 @@ test("buyer artifacts preserve entrypoints, credential privacy and sensitive-fil
   const cloudformation = readFileSync("cloudformation/blakdna-fargate.yaml", "utf8");
   assert.doesNotMatch(cloudformation, /SampledRequestsEnabled: true/);
   assert.match(cloudformation, /RedactedFields:.*Name: cookie/);
+  assert.match(cloudformation, /FieldType: SINGLE_HEADER, FieldKeys: \[authorization, cookie\]/);
   assert.match(cloudformation, /DataKey:\n\s+Type: AWS::KMS::Key\n\s+DeletionPolicy: Retain\n\s+UpdateReplacePolicy: Retain/);
   assert.doesNotMatch(cloudformation, /EntryPoint:|SKIP_DB_MIGRATE/);
   const terraform = readFileSync("terraform/load-balancer.tf", "utf8");
   assert.doesNotMatch(terraform, /sampled_requests_enabled\s*=\s*true/);
   assert.match(terraform, /single_header \{ name = "cookie" \}/);
+  assert.match(terraform, /field_keys = \["authorization", "cookie"\]/);
   for (const filename of ["charts/blakdna/templates/preflight.yaml", "charts/blakdna/templates/deployments.yaml"]) {
     assert.doesNotMatch(readFileSync(filename, "utf8"), /^\s+command:|SKIP_DB_MIGRATE/m);
   }
