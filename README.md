@@ -85,8 +85,8 @@ No release tag should be published until those gates pass.
 Pushes and trusted same-repository pull requests run
 [security CI](.github/workflows/security.yml): Terraform fmt/init/validate/tests,
 TFLint, Helm lint/render, CloudFormation lint, ShellCheck, lifecycle tests,
-Checkov, Gitleaks and Trivy dependency/secret/configuration scans. External
-forks do not execute on organisation self-hosted runners.
+Checkov, Gitleaks and Trivy dependency/secret/configuration scans. Jobs run on
+GitHub-hosted runners, and external fork pull requests are skipped.
 
 The isolated validation container uses synthetic data and receives no AWS
 credentials. It does not apply infrastructure or pull Marketplace images.
