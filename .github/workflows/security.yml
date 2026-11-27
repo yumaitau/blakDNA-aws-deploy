@@ -50,16 +50,6 @@ jobs:
           docker run --rm --name "$IMAGE-history" \
             --mount "type=bind,source=$GITHUB_WORKSPACE/.git,target=/validation/.git,readonly" \
             "$IMAGE" sh -c 'git config --global --add safe.directory /validation; gitleaks git . --redact --no-banner'
-      - name: Retain validation log
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: buyer-validation-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            buyer-validation.log
-            reports/
-          if-no-files-found: ignore
-          retention-days: 14
       - name: Remove only this job's resources
         if: always()
         env:
